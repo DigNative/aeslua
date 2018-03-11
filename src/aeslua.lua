@@ -106,7 +106,7 @@ function public.decrypt(password, data, keyLength, mode, iv)
         plain = ciphermode.decryptString(key, data, ciphermode.decryptCFB, iv);
     end
     
-    result = util.unpadByteString(plain);
+    local result = util.unpadByteString(plain);
     
     if (result == nil) then
         return nil;

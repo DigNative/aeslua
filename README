@@ -12,7 +12,7 @@ aeslua.lua contains a simple API to encrypt and decrypt lua strings.
 To encrypt the string "geheim" with the password "password" use:
 
 require("aeslua");
-cipher = aeslua.encrypt("password", "secret");
+cipher = aeslua.encrypt("password", "geheim");
 
 and to decrypt the string again:
 

@@ -1,4 +1,4 @@
-require("bit");
+local bit = require("bit");
 
 local gf = require("aeslua.gf");
 local util = require("aeslua.util");
@@ -57,8 +57,9 @@ private.rCon = {0x01000000,
 -- affine transformation for calculating the S-Box of AES
 --
 function private.affinMap(byte)
-    mask = 0xf8;
-    result = 0;
+    local parity, lastbit;
+    local mask = 0xf8;
+    local result = 0;
     for i = 1,8 do
         result = bit.lshift(result,1);
 
@@ -83,13 +84,14 @@ end
 -- apply affine transformation to inverse in finite field 2^8 
 --
 function private.calcSBox() 
+    local inverse, mapped;
     for i = 0, 255 do
     if (i ~= 0) then
         inverse = gf.invert(i);
     else
         inverse = i;
     end
-        mapped = private.affinMap(inverse);                 
+        mapped = private.affinMap(inverse);
         private.SBox[i] = mapped;
         private.iSBox[mapped] = i;
     end
@@ -101,6 +103,7 @@ end
 -- with 4 table lookups and 4 xor operations.
 --
 function private.calcRoundTables()
+    local byte;
     for x = 0,255 do
         byte = private.SBox[x];
         private.table0[x] = util.putByte(gf.mul(0x03, byte), 0)
@@ -128,6 +131,7 @@ end
 -- decryption algorithm.
 --
 function private.calcInvRoundTables()
+    local byte;
     for x = 0,255 do
         byte = private.iSBox[x];
         private.tableInv0[x] = util.putByte(gf.mul(0x0b, byte), 0)
@@ -258,7 +262,7 @@ function private.invMixColumn(word)
     local u = bit.bxor(b1,b0);
     local v = bit.bxor(t,u);
     v = bit.bxor(v,gf.mul(0x08,v));
-    w = bit.bxor(v,gf.mul(0x04, bit.bxor(b2,b0)));
+    local w = bit.bxor(v,gf.mul(0x04, bit.bxor(b2,b0)));
     v = bit.bxor(v,gf.mul(0x04, bit.bxor(b3,b1)));
     
     return util.putByte( bit.bxor(bit.bxor(b3,v), gf.mul(0x02, bit.bxor(b0,b3))), 0)

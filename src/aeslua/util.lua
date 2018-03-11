@@ -1,4 +1,4 @@
-require("bit");
+local bit = require("bit");
 
 local public = {};
 local private = {};

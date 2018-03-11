@@ -1,4 +1,4 @@
-require("bit");
+local bit = require("bit");
 
 -- finite field with base 2 and modulo irreducible polynom x^8+x^4+x^3+x+1 = 0x11d
 local private = {};
