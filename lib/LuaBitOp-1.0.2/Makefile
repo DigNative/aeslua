@@ -3,7 +3,7 @@
 # To compile with MinGW please run: mingw32-make -f Makefile.mingw
 
 # Include path where lua.h, luaconf.h and lauxlib.h reside:
-INCLUDES= -I/usr/local/include
+INCLUDES= -I../lua-5.2.4/src
 
 DEFINES=
 # Use this for the old ARM ABI with swapped FPA doubles.
@@ -20,6 +20,7 @@ SOCC= $(CC) -shared
 SOCFLAGS= -fPIC $(CCOPT) $(CCWARN) $(DEFINES) $(INCLUDES) $(CFLAGS)
 SOLDFLAGS= -fPIC $(LDFLAGS)
 RM= rm -f
+STRIP= strip --strip-unneeded
 INSTALL= install -p
 INSTALLPATH= $(LUA) installpath.lua
 
@@ -37,6 +38,7 @@ $(MODNAME).o: $(MODNAME).c
 
 $(MODSO): $(MODNAME).o
 	$(SOCC) $(SOLDFLAGS) -o $@ $<
+	$(STRIP) $@
 
 install: $(MODSO)
 	$(INSTALL) $< `$(INSTALLPATH) $(MODNAME)`
