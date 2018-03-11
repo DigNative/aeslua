@@ -37,6 +37,7 @@ $(MODNAME).o: $(MODNAME).c
 	$(CC) $(SOCFLAGS) -c -o $@ $<
 
 $(MODSO): $(MODNAME).o
+	#$(SOCC) $(SOLDFLAGS) -o $@ $< "/usr/bin/cygtexlua52-5.dll"
 	$(SOCC) $(SOLDFLAGS) -o $@ $<
 	$(STRIP) $@
 
