@@ -97,6 +97,7 @@ function public.toHexString(data)
 end
 
 function public.padByteString(data)
+    --[[
     local dataLength = #data;
     
     local random1 = math.random(0,255);
@@ -112,11 +113,12 @@ function public.padByteString(data)
                                public.getByte(dataLength, 0));
 
     data = prefix .. data;
+    ]]--
 
     local paddingLength = math.ceil(#data/16)*16 - #data;
     local padding = "";
     for i=1,paddingLength do
-        padding = padding .. string.char(math.random(0,255));
+        padding = padding .. string.char(paddingLength);
     end 
 
     return data .. padding;
