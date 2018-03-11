@@ -68,7 +68,7 @@ end
 --
 -- convert bytes to hexString
 --
-function private.bytesToHex(bytes)
+function public.bytesToHex(bytes)
     local hexBytes = "";
     
     for i,byte in ipairs(bytes) do 
@@ -86,11 +86,11 @@ function public.toHexString(data)
     if (type == "number") then
         return string.format("%08x",data);
     elseif (type == "table") then
-        return private.bytesToHex(data);
+        return public.bytesToHex(data);
     elseif (type == "string") then
         local bytes = {string.byte(data, 1, #data)}; 
 
-        return private.bytesToHex(bytes);
+        return public.bytesToHex(bytes);
     else
         return data;
     end

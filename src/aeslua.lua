@@ -47,11 +47,12 @@ end
 -- password  - the encryption key is generated from this string
 -- data      - string to encrypt (must not be too large)
 -- keyLength - length of aes key: 128(default), 192 or 256 Bit
--- mode      - mode of encryption: ecb, cbc(default), ofb, cfb 
+-- mode      - mode of encryption: ecb, cbc(default), ofb, cfb
+-- iv        - initialization vector to be used
 --
 -- mode and keyLength must be the same for encryption and decryption.
 --
-function public.encrypt(password, data, keyLength, mode)
+function public.encrypt(password, data, keyLength, mode, iv)
 	assert(password ~= nil, "Empty password.");
 	assert(password ~= nil, "Empty data.");
 	 
@@ -63,13 +64,13 @@ function public.encrypt(password, data, keyLength, mode)
     local paddedData = util.padByteString(data);
     
     if (mode == public.ECBMODE) then
-        return ciphermode.encryptString(key, paddedData, ciphermode.encryptECB);
+        return ciphermode.encryptString(key, paddedData, ciphermode.encryptECB, iv), aeslua.util.bytesToHex(key);
     elseif (mode == public.CBCMODE) then
-        return ciphermode.encryptString(key, paddedData, ciphermode.encryptCBC);
+        return ciphermode.encryptString(key, paddedData, ciphermode.encryptCBC, iv), aeslua.util.bytesToHex(key);
     elseif (mode == public.OFBMODE) then
-        return ciphermode.encryptString(key, paddedData, ciphermode.encryptOFB);
+        return ciphermode.encryptString(key, paddedData, ciphermode.encryptOFB, iv), aeslua.util.bytesToHex(key);
     elseif (mode == public.CFBMODE) then
-        return ciphermode.encryptString(key, paddedData, ciphermode.encryptCFB);
+        return ciphermode.encryptString(key, paddedData, ciphermode.encryptCFB, iv), aeslua.util.bytesToHex(key);
     else
         return nil;
     end
@@ -83,11 +84,12 @@ end
 -- password  - the decryption key is generated from this string
 -- data      - string to encrypt
 -- keyLength - length of aes key: 128(default), 192 or 256 Bit
--- mode      - mode of decryption: ecb, cbc(default), ofb, cfb 
+-- mode      - mode of decryption: ecb, cbc(default), ofb, cfb
+-- iv        - initialization vector to be used
 --
 -- mode and keyLength must be the same for encryption and decryption.
 --
-function public.decrypt(password, data, keyLength, mode)
+function public.decrypt(password, data, keyLength, mode, iv)
     local mode = mode or public.CBCMODE;
     local keyLength = keyLength or public.AES128;
 
@@ -95,13 +97,13 @@ function public.decrypt(password, data, keyLength, mode)
     
     local plain;
     if (mode == public.ECBMODE) then
-        plain = ciphermode.decryptString(key, data, ciphermode.decryptECB);
+        plain = ciphermode.decryptString(key, data, ciphermode.decryptECB, iv);
     elseif (mode == public.CBCMODE) then
-        plain = ciphermode.decryptString(key, data, ciphermode.decryptCBC);
+        plain = ciphermode.decryptString(key, data, ciphermode.decryptCBC, iv);
     elseif (mode == public.OFBMODE) then
-        plain = ciphermode.decryptString(key, data, ciphermode.decryptOFB);
+        plain = ciphermode.decryptString(key, data, ciphermode.decryptOFB, iv);
     elseif (mode == public.CFBMODE) then
-        plain = ciphermode.decryptString(key, data, ciphermode.decryptCFB);
+        plain = ciphermode.decryptString(key, data, ciphermode.decryptCFB, iv);
     end
     
     result = util.unpadByteString(plain);
